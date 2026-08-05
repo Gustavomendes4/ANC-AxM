@@ -1,0 +1,60 @@
+*.wav
+*.bin
+*.hex
+*.elf
+*.o
+
+# synopsys dir
+work/
+runs/
+out/
+sim/
+dc_work/
+vcs_work/
+verdiLog/
+csrc/
+simv.daidir/
+simv.vdb/
+
+# sim
+*.vcd
+*.vpd
+*.fsdb
+*.wlf
+simv
+simv.daidir/
+*.vvp
+*.o
+
+# timing and backend
+*.sdf
+*.spef
+*.svf
+
+# logs and reports
+*.log
+*.rpt
+*.lis
+*.mr
+command.log
+compile.log
+vcs.log
+synopsys_*.log
+*.syn
+*.pvl
+
+# backups
+*.bak
+*.bkp
+*.tmp
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+__pycache__/
+*.pyc
