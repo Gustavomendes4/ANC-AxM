@@ -1,24 +1,27 @@
-#Note que para rodar esse comando vc deve estar dentro de uma pasta na mesma altura que scripts
+#Anchoring paths to directory root/Avoid moving up and down directories
+set ROOT_DIR [file dirname [file dirname [file normalize [info script]]]]
 
-source ../scripts/common/setup.tcl
-source ../scripts/common/utils.tcl
-source ../scripts/common/create_run_dirs.tcl
+#Note que para rodar esse comando (recomendado) estar dentro de uma pasta na mesma altura que scripts
+
+source "${ROOT_DIR}/scripts/common/setup.tcl"
+source "${ROOT_DIR}/scripts/common/utils.tcl"
+source "${ROOT_DIR}/scripts/common/create_run_dirs.tcl"
 
 check_status "READ RTL" {source ../scripts/flow/read_rtl.tcl}
 
 check_status "ELABORATE" {source ../scripts/flow/elaborate.tcl}
 
-source ../scripts/constraints/cons.tcl
+source "${ROOT_DIR}/scripts/constraints/cons.tcl"
 check_timing
-
-check_status "SYNTHESIS" {source ../scripts/flow/synthesis.tcl}
-
-check_status "DFT" {source ../scripts/flow/dft.tcl}
-
-check_status "WRITE OUTPUTS"  {source ../scripts/flow/write_outputs.tcl}
-
-check_status "REPORTS" {source ../scripts/flow/reports.tcl}
-
+ 
+check_status "SYNTHESIS" {source "${ROOT_DIR}/scripts/flow/synthesis.tcl"}
+ 
+check_status "DFT" {source "${ROOT_DIR}/scripts/flow/dft.tcl"}
+ 
+check_status "WRITE OUTPUTS" {source "${ROOT_DIR}/scripts/flow/write_outputs.tcl"}
+ 
+check_status "REPORTS" {source "${ROOT_DIR}/scripts/flow/reports.tcl"}
+ 
 puts "FINISH"
 
 # exit
