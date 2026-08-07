@@ -7,9 +7,9 @@ source "${ROOT_DIR}/scripts/common/setup.tcl"
 source "${ROOT_DIR}/scripts/common/utils.tcl"
 source "${ROOT_DIR}/scripts/common/create_run_dirs.tcl"
 
-check_status "READ RTL" {source ../scripts/flow/read_rtl.tcl}
+check_status "READ RTL" {source "${ROOT_DIR}/scripts/flow/read_rtl.tcl"}
 
-check_status "ELABORATE" {source ../scripts/flow/elaborate.tcl}
+check_status "ELABORATE" {source "${ROOT_DIR}/scripts/flow/elaborate.tcl"}
 
 source "${ROOT_DIR}/scripts/constraints/cons.tcl"
 check_timing
