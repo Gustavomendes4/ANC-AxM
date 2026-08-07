@@ -1,6 +1,6 @@
 set RUN_NAME [clock format [clock seconds] -format "%Y%m%d_%H%M%S"]
 
-set RUN_DIR "../runs/$RUN_NAME"
+set RUN_DIR "${ROOT_DIR}/runs/$RUN_NAME"
 
 set REPORTS_DIR  "$RUN_DIR/reports"
 set OUTPUTS_DIR  "$RUN_DIR/outputs"
@@ -21,16 +21,16 @@ if {![file exists $work_path]} {
 }
 
 set files_to_backup {
-    ../rtl/
-    ../scripts/
+    rtl
+    scripts
 }
 
 foreach file $files_to_backup {
-
-    if {[file exists $file]} {
-        file copy -force $file $SNAPSHOT_DIR/
+    set src "${ROOT_DIR}/${file}"
+    if {[file exists $src]} {
+        file copy -force $src $SNAPSHOT_DIR/
     } else {
-        puts "WARNING: Arquivo nao encontrado: $file"
+        puts "WARNING: Arquivo nao encontrado: $src"
     }
 }
 

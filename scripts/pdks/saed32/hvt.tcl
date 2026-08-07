@@ -1,4 +1,4 @@
-source ../scripts/pdks/saed32/common.tcl
+source "${ROOT_DIR}/scripts/pdks/saed32/common.tcl"
 
 set LIB_PATH "${PDK_BASE}/lib/stdcell_hvt/"
 set DB_PATH "${PDK_BASE}/lib/stdcell_hvt/db_nldm"
