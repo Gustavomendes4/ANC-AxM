@@ -217,111 +217,93 @@ module LMS_Direct_10taps #(
     output [N-1:0] y
 );
     wire [N-1:0] erro_yn, yn;
-    wire[N-1:0] Ro9,Ro8,Ro7,Ro6,Ro5,Ro4,Ro3,Ro2,Ro1,Ry,y_shift,erro,emi,W10,W9,W8,W7,W6,W5,W4,W3,W2,W1;
-    wire[2*N-1:0] M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,y_trunc,SP2,SP1,Soma1O,em,MW1,WI1,MW2,WI2,MW3,WI3,MW4,WI4,MW5,WI5,MW6,WI6,MW7,WI7,MW8,WI8,MW9,WI9,MW10,WI10,WO10,WO9,WO8,WO7,WO6,WO5,WO4,WO3,WO2,WO1;
+    wire[N-1:0] Ry,y_shift,erro,emi;
+    wire[2*N-1:0] y_trunc,SP2,SP1,Soma1O,em;
+    wire[2*N-1:0] MW [0:9];
+    wire[2*N-1:0] WI [0:9];
+    wire[2*N-1:0] WO [0:9];
+
+
+    wire [N-1:0] Ro [0:9];
+    wire [N-1:0] W [0:9];
+    wire [2*N-1:0] M [0:9];
 
     // Esses registradores em sequência criam uma memória do sinal de entrada, pois demora 10 ciclos para x chegar em Ro9
-    REG #(N) R1(.clock(clock),.CL(reset),.A(x),.S(Ro1));
-    REG #(N) R2(.clock(clock),.CL(reset),.A(Ro1),.S(Ro2));
-    REG #(N) R3(.clock(clock),.CL(reset),.A(Ro2),.S(Ro3));
-    REG #(N) R4(.clock(clock),.CL(reset),.A(Ro3),.S(Ro4));
-    REG #(N) R5(.clock(clock),.CL(reset),.A(Ro4),.S(Ro5));
-    REG #(N) R6(.clock(clock),.CL(reset),.A(Ro5),.S(Ro6));
-    REG #(N) R7(.clock(clock),.CL(reset),.A(Ro6),.S(Ro7));
-    REG #(N) R8(.clock(clock),.CL(reset),.A(Ro7),.S(Ro8));
-    REG #(N) R9(.clock(clock),.CL(reset),.A(Ro8),.S(Ro9));
-    
-    // ##############################################################################################
-    /* Acho que esse é o W FILTER, isso em python seria:
-        for i in range(1, len(self.a)):
-            if n_tot > i:
-                temp = temp - x_tot[n_tot - i] * self.a[i]
-    onde a[i] = W[i]
-    */
-    MULT_GEN #(N) Mult1(.A(W1),.B(x),.Y(M1));
-    MULT_GEN #(N) Mult2(.A(W2),.B(Ro1),.Y(M2));
-    MULT_GEN #(N) Mult3(.A(W3),.B(Ro2),.Y(M3));
-    MULT_GEN #(N) Mult4(.A(W4),.B(Ro3),.Y(M4));
-    MULT_GEN #(N) Mult5(.A(W5),.B(Ro4),.Y(M5));
-    MULT_GEN #(N) Mult6(.A(W6),.B(Ro5),.Y(M6));
-    MULT_GEN #(N) Mult7(.A(W7),.B(Ro6),.Y(M7));
-    MULT_GEN #(N) Mult8(.A(W8),.B(Ro7),.Y(M8));
-    MULT_GEN #(N) Mult9(.A(W9),.B(Ro8),.Y(M9));
-    MULT_GEN #(N) Mult10(.A(W10),.B(Ro9),.Y(M10));
+    genvar i;
+    generate
+        for (i = 0; i < 9; i = i + 1) begin : gen_reg
+            REG #(N) R (
+                .clock(clock),
+                .CL(reset),
+                .A(i == 0 ? x : Ro[i]),
+                .S(Ro[i+1])
+            );
+        end
+    endgenerate
 
-    // temp = temp - x_tot[n_tot - i] * self.a[i] pode ser reescrito como temp - SOMATÓRIO dos MULT_GEN
-    SUM_GEN #(2*N) SUM_tree2(.A(M1),.B(M2),.Y(SP1));
-    tree_8 #(2*N)  AT2 (M3,M4,M5,M6,M7,M8,M9,M10,SP2);
+    genvar k;
+    generate
+        for (k = 0; k < 10; k = k + 1) begin : gen_mul
+            MULT_GEN #(N) Mult(
+                .A(W[k]),
+                .B(k == 0 ? x : Ro[k]),
+                .Y(M[k])
+            );
+        end
+    endgenerate
+
+
+    SUM_GEN #(2*N) SUM_tree2(.A(M[0]),.B(M[1]),.Y(SP1));
+    tree_8 #(2*N)  AT2 (M[2],M[3],M[4],M[5],M[6],M[7],M[8],M[9],SP2);
     SUM_GEN #(2*N) SUM_10(.A(SP1),.B(SP2),.Y(Soma1O));
-    //ISSO AQUI TA ESTRANHO, pq tava dando shift a esquerda? (código original)
-    //Resposta (Vinicius): Por conta da linha 58, como estamos em ponto fixo a multiplicação de divisão gera um deslocamento em relação a F
-    // (A << F) * (B << F) = (A * B) << (2 * F)
-    //Então sempre depois dessas operações é necessário corrigir
-
 
     // Como temp = 0, inverte o resultado, isso no python seria o xp
     assign y_trunc = -1*Soma1O;
 
-    // ##############################################################################################
     //Instância do filtro Sfilter
-
     TRUN_GEN_C #(N/2,F) T1 (.A(y_trunc),.Y(y_shift));
     FIR_SFilter Sfilter (.clock(clock),.reset(reset),.x_in(y_shift),.y_out(yn));
 
 
-    // ##############################################################################################
     // erro
     SUM_GEN #(N) error_adder(.A(d),.B(yn),.Y(erro_yn));
 
 
-    // ##############################################################################################
-    // self.wfilter.update
-
+    //Multiplicadores para Calculo de newCoef
     MULT_GEN #(N) Mult_mi (.A(erro_yn),.B(mi), .Y(em));
     TRUN_GEN_C #(N/2,F) T_mi (.A(em), .Y(emi));
-    //Multiplicadores para Calculo de newCoef
-    MULT_GEN2 #(N) Mult_we1(.A(emi) ,.B(x),.Y(MW1));
-    SUM_GEN #(2*N) Sum_we1(.A(MW1),.B(WO1),.Y(WI1));
-    MULT_GEN2 #(N) Mult_we2(.A(emi) ,.B(Ro1),.Y(MW2));
-    SUM_GEN #(2*N) Sum_we2(.A(MW2),.B(WO2),.Y(WI2));
-    MULT_GEN2 #(N) Mult_we3(.A(emi) ,.B(Ro2),.Y(MW3));
-    SUM_GEN #(2*N) Sum_we3(.A(MW3),.B(WO3),.Y(WI3));
-    MULT_GEN2 #(N) Mult_we4(.A(emi) ,.B(Ro3),.Y(MW4));
-    SUM_GEN #(2*N) Sum_we4(.A(MW4),.B(WO4),.Y(WI4));
-    MULT_GEN2 #(N) Mult_we5(.A(emi) ,.B(Ro4),.Y(MW5));
-    SUM_GEN #(2*N) Sum_we5(.A(MW5),.B(WO5),.Y(WI5));
-    MULT_GEN2 #(N) Mult_we6(.A(emi) ,.B(Ro5),.Y(MW6));
-    SUM_GEN #(2*N) Sum_we6(.A(MW6),.B(WO6),.Y(WI6));
-    MULT_GEN2 #(N) Mult_we7(.A(emi) ,.B(Ro6),.Y(MW7));
-    SUM_GEN #(2*N) Sum_we7(.A(MW7),.B(WO7),.Y(WI7));
-    MULT_GEN2 #(N) Mult_we8(.A(emi) ,.B(Ro7),.Y(MW8));
-    SUM_GEN #(2*N) Sum_we8(.A(MW8),.B(WO8),.Y(WI8));
-    MULT_GEN2 #(N) Mult_we9(.A(emi) ,.B(Ro8),.Y(MW9));
-    SUM_GEN #(2*N) Sum_we9(.A(MW9),.B(WO9),.Y(WI9));
-    MULT_GEN2 #(N) Mult_we10(.A(emi) ,.B(Ro9),.Y(MW10));
-    SUM_GEN #(2*N) Sum_we10(.A(MW10),.B(WO10),.Y(WI10));
+    
 
-    // ##############################################################################################
-    REG #(2*N) R_we1(.clock(clock),.CL(reset),.A(WI1),.S(WO1));
-    TRUN_GEN_C #(N/2,F) T_we1(.A(WO1), .Y(W1));
-    REG #(2*N) R_we2(.clock(clock),.CL(reset),.A(WI2),.S(WO2));
-    TRUN_GEN_C #(N/2,F) T_we2(.A(WO2), .Y(W2));
-    REG #(2*N) R_we3(.clock(clock),.CL(reset),.A(WI3),.S(WO3));
-    TRUN_GEN_C #(N/2,F) T_we3(.A(WO3), .Y(W3));
-    REG #(2*N) R_we4(.clock(clock),.CL(reset),.A(WI4),.S(WO4));
-    TRUN_GEN_C #(N/2,F) T_we4(.A(WO4), .Y(W4));
-    REG #(2*N) R_we5(.clock(clock),.CL(reset),.A(WI5),.S(WO5));
-    TRUN_GEN_C #(N/2,F) T_we5(.A(WO5), .Y(W5));
-    REG #(2*N) R_we6(.clock(clock),.CL(reset),.A(WI6),.S(WO6));
-    TRUN_GEN_C #(N/2,F) T_we6(.A(WO6), .Y(W6));
-    REG #(2*N) R_we7(.clock(clock),.CL(reset),.A(WI7),.S(WO7));
-    TRUN_GEN_C #(N/2,F) T_we7(.A(WO7), .Y(W7));
-    REG #(2*N) R_we8(.clock(clock),.CL(reset),.A(WI8),.S(WO8));
-    TRUN_GEN_C #(N/2,F) T_we8(.A(WO8), .Y(W8));
-    REG #(2*N) R_we9(.clock(clock),.CL(reset),.A(WI9),.S(WO9));
-    TRUN_GEN_C #(N/2,F) T_we9(.A(WO9), .Y(W9));
-    REG #(2*N) R_we10(.clock(clock),.CL(reset),.A(WI10),.S(WO10));
-    TRUN_GEN_C #(N/2,F) T_we10(.A(WO10), .Y(W10));
+    genvar j;
+    generate
+        for (j = 0; j < 10; j = j + 1) begin : gen_coef_update
+            MULT_GEN2 #(N) Mult_w(
+                .A(emi),
+                .B(j == 0 ? x : Ro[j]),
+                .Y(MW[j])
+            );
+
+            SUM_GEN #(2*N) Sum_w(
+                .A(MW[j]),
+                .B(WO[j]),
+                .Y(WI[j])
+            );
+
+            // ########################
+            REG #(2*N) R_we(
+                .clock(clock),
+                .CL(reset),
+                .A(WI[j]),
+                .S(WO[j])
+            );
+
+            TRUN_GEN_C #(N/2,F) T_we(
+                .A(WO[j]),
+                .Y(W[j])
+            );
+        end
+    endgenerate
+
     assign e=erro_yn;
     REG #(N) R_OUT(.clock(clock),.CL(reset),.A(y_shift),.S(y));
 
