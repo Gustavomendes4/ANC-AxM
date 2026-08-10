@@ -131,6 +131,48 @@ module tree_8 #(
     assign y = {Soma7O[N-1],Soma7O[N-5:0],1'b0,1'b0,1'b0};
 endmodule
 
+module FIR_SFilter # (parameter N=16, parameter F = 14) (
+    input wire clock,
+    input wire reset,
+    input wire [N-1:0] x_in,       // Entrada do filtro
+    output wire [N-1:0] y_out      // Saída do filtro
+);
+
+    // Constantes em ponto fixo (ajustadas para Q16.11)
+    wire [N-1:0] g =  16'h2000; //0.5
+    wire [N-1:0] c = 16'h1333; // 0.3 em Q16.11
+
+    // Registradores para armazenar valores anteriores de y
+    wire [N-1:0] y_reg1, y_reg2;
+
+    // Sinais intermediários
+    wire [2*N-1:0] mult1, mult2;
+    wire [N-1:0] mult1_trunc, mult2_trunc, sub1, sub2, result;
+
+    // Instâncias de registros para os valores anteriores de y
+    REG #(N) R1 (.clock(clock), .CL(reset), .A(result), .S(y_reg1));
+    REG #(N) R2 (.clock(clock), .CL(reset), .A(y_reg1), .S(y_reg2));
+
+    // Multiplicadores para g * y[n-1] e c * y[n-2]
+    MULT_GEN #(N) Mult1 (.A(y_reg1), .B(g), .Y(mult1));
+    MULT_GEN #(N) Mult2 (.A(y_reg2), .B(c), .Y(mult2));
+
+    // Subtração: x_in - g * y[n-1] // usar o ext_gen para A ou usar o trunc_gen e trabalhar em N bits
+    TRUN_GEN_C #(N/2,F) T_1 (.A(mult1),.Y(mult1_trunc));
+    TRUN_GEN_C #(N/2,F) T_2 (.A(mult2),.Y(mult2_trunc));
+
+    SUB_GEN #(N) Sub1 (.A(x_in), .B(mult1_trunc), .Y(sub1));
+    // Subtração final: sub1 - c * y[n-2]
+    SUB_GEN #(N) Sub2 (.A(sub1), .B(mult2_trunc), .Y(sub2));
+
+    // Normalização do resultado
+    assign result = sub2;
+
+    // Conectando o resultado à saída
+    assign y_out = result; //Usar trunc_gen
+
+endmodule
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 module LMS_Direct_10taps #(
     parameter N =16,
