@@ -61,21 +61,24 @@ sim: setup comp run
 setup:
 	@echo "--- [VCS SETUP] Preparando diretório de execução em /run ---"
 	@mkdir -p $(RUN_DIR)
-	@if [ ! -f WORKFILELIST)" ]; then echo "ERRO: $(FILELIST) não encontrado!"; exit 1; fi
+	@if [ ! -f "$(FILELIST)" ]; then echo "ERRO: $(FILELIST) não encontrado!"; exit 1; fi
 
 comp:
 	@echo "--- [VCS COMP] Compilando RTL e Testbench dentro de /run ---"
 	cd $(RUN_DIR) && vcs $(VCS_FLAGS) $(COMP_ARGS) -f $(FILELIST) -top $(TOP_TB)
-WORKn:
+
+run:
 	@echo "--- [VCS RUN] Executando Simulação em /run ---"
 	cd $(RUN_DIR) && ./simv $(RUN_ARGS) -l vcs_run.log
-WORKew_cov:
+
+view_cov:
 	@echo "--- [VERDI COV] Abrindo Análise de Cobertura no Verdi ---"
 	@if [ ! -d "$(RUN_DIR)/simv.vdb" ]; then \
-		echo "ERRWORKBanco de dados de cobertura não encontrado!"; \
+		echo "ERRO: Banco de dados de cobertura não encontrado!"; \
 		exit 1; \
 	fi
 	cd $(RUN_DIR) && verdi -cov -covdir simv.vdb &
-WORKean:
+
+clean:
 	@echo "--- [VCS CLEAN] Limpando a pasta /run ---"
-	rm -rf $(RUN_DIR)WORK
+	rm -rf $(RUN_DIR)/

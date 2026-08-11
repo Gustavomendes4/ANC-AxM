@@ -4,6 +4,7 @@
 # ==============================================================================
 
 WORK_DIR         := $(DC_DIR)/work
+WORK_DIR         := $(DC_DIR)/runs
 
 FILELIST_RTL    := $(VERIF_DIR)/filelist.f
 SYNTH_SCRIPT    := $(DC_DIR)/scripts/run.tcl
@@ -39,5 +40,5 @@ run_synth:
 	fi
 
 clean:
-	@echo "--- [DC_NXT CLEAN] Limpando a pasta /run ---"
-	rm -rf $(WORK_DIR)/*
+	rm -rf $(WORK_DIR)/
+	rm -rf $(WORK_DIR)/
