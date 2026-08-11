@@ -11,29 +11,21 @@ lappend search_path "${RTL_DIR}"
 lappend search_path "${target_library}"
 
 set_app_var synthetic_library dw_foundation.sldb
-set_app_var link_library "* $target_library $synthetic_library"
+set_app_var link_library "* $target_library"
 set ndm_design_library "$NDM_DESIGN_LIB"
 
-###### TESTE
-if {![file isdirectory "${ndm_design_library}"]} {
-
-    puts "Creating NDM design library..."
-
+if {![file isdirectory $NDM_DESIGN_LIB]} {
     create_lib \
-        -technology "${TECH_FILE}" \
-        -ref_libs "${NDM_REFERENCE_LIB_DIRS}" \
-        "${ndm_design_library}"
-
+        -technology $TECH_FILE \
+        -ref_libs   $NDM_REFERENCE_LIBS \
+        $NDM_DESIGN_LIB
 } else {
-
-    puts "Opening existing NDM design library..."
-
-    open_lib "${ndm_design_library}"
-
-    set_ref_libs \
-        -ref_libs "${NDM_REFERENCE_LIB_DIRS}"
+    open_lib $NDM_DESIGN_LIB
 }
 
+set_tlu_plus_files \
+    -max_tluplus  $TLUPLUS_MAX_FILE \
+    -tech2itf_map $MAP_FILE
 
 #####################################################################
 # PATH SETUP
