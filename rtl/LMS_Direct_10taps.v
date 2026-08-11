@@ -268,7 +268,6 @@ module LMS_Direct_10taps #(
     // erro
     SUM_GEN #(N) error_adder(.A(d),.B(yn),.Y(erro_yn));
 
-
     //Multiplicadores para Calculo de newCoef
     MULT_GEN #(N) Mult_mi (.A(erro_yn),.B(mi), .Y(em));
     TRUN_GEN_C #(N/2,F) T_mi (.A(em), .Y(emi));
