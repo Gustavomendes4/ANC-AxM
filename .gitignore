@@ -60,3 +60,5 @@ Thumbs.db
 .idea/
 __pycache__/
 *.pyc
+
+rtl/AN.DB/
