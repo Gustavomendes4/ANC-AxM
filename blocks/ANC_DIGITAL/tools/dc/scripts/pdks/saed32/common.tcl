@@ -19,3 +19,5 @@ set ROUTING_LAYER_DIRECTION_OFFSET_LIST "{M1 horizontal} {M2 vertical} {M3 horiz
 set TCL_MV_SETUP_FILE     ""
 set TCL_PG_CREATION_FILE  ""
 set TIE_LIB_CELL_PATTERN_LIST "*/TIE*"
+
+set NDM_DESIGN_LIB "TOP.dlib"
