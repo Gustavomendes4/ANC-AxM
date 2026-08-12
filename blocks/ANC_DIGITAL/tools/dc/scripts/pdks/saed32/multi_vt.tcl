@@ -1,4 +1,4 @@
-source "${ROOT_DIR}/scripts/pdks/saed32/common.tcl"
+source "${DC_DIR}/scripts/pdks/saed32/common.tcl"
 
 # ---- HVT ----
 set LIB_PATH_HVT "${PDK_BASE}/lib/stdcell_hvt/"

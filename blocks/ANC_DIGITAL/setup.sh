@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+set -e
+
+### PATHS
+# project root
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+export ANC_DIGITAL_ROOT="${SCRIPT_DIR}"
+
+# directories
+export RTL_DIR="${ANC_DIGITAL_ROOT}/rtl"
+export VERIF_DIR="${ANC_DIGITAL_ROOT}/verif"
+export CONSTRAINTS_DIR="${ANC_DIGITAL_ROOT}/constraints"
+
+# tools scripts
+export SYNTH_DIR="${ANC_DIGITAL_ROOT}/tools"
+export DC_DIR="${SYNTH_DIR}/dc"
+export FC_DIR="${SYNTH_DIR}/fc"
+export FM_DIR="${SYNTH_DIR}/dc/fm"
+export VCS_DIR="${SYNTH_DIR}/dc/vcs"
+
+
+### MODULES
+MODULES=(
+    "syn/W-2024.09-SP5-2"
+    "fusioncompiler/W-2024.09-SP3"
+    "designcompiler/W-2024.09-SP5-4"
+    "vcs/W-2024.09-SP2-3"
+    "verdi/W-2024.09-SP2-6"
+    "fm/W-2024.09-SP5"
+)
+
+echo "Loading Synopsys modules..."
+for mod in "${MODULES[@]}"; do
+    module load "${mod}"
+done
+
+### Summary
+echo
+echo " ANC-AxM environment configured"
+echo "ANC_DIGITAL_ROOT     = ${ANC_DIGITAL_ROOT}"
+echo "RTL_DIR          = ${RTL_DIR}"
+echo "CONSTRAINTS_DIR  = ${CONSTRAINTS_DIR}"
+echo "VERIFICATION_DIR = ${VERIF_DIR}"
+echo "SYNTH_DIR        = ${SYNTH_DIR}"
+echo "DC_DIR           = ${DC_DIR}"
+echo "FC_DIR           = ${FC_DIR}"
+echo "FM_DIR           = ${FM_DIR}"
+echo "VCS_DIR          = ${VCS_DIR}"
+echo "=========================================="
