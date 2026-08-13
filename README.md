@@ -1,5 +1,4 @@
 # TODO LIST
-* Falta arrumar os paths do arquivo fm.tcl
 * Temos que decifir onde colocar os arquivos coms os paths do pdk, não acho que seja ideial ter uma configuração de pdk no fm e outra no dc, analisar e criar um pasta com isso centralizado, pois isso pode virar bagunça
 
 # Observaçõres

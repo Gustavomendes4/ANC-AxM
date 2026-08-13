@@ -15,9 +15,9 @@ export CONSTRAINTS_DIR="${ANC_DIGITAL_ROOT}/constraints"
 # tools scripts
 export SYNTH_DIR="${ANC_DIGITAL_ROOT}/tools"
 export DC_DIR="${SYNTH_DIR}/dc"
-export FC_DIR="${SYNTH_DIR}/fc"
-export FM_DIR="${SYNTH_DIR}/dc/fm"
-export VCS_DIR="${SYNTH_DIR}/dc/vcs"
+export FC_DIR="${SYNTH_DIR}/fc" #inexistente no momento
+export FM_DIR="${SYNTH_DIR}/fm"
+export VCS_DIR="${SYNTH_DIR}/vcs"
 
 
 ### MODULES

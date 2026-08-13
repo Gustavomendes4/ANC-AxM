@@ -51,10 +51,8 @@ if {![file exists $work_path]} {
     file mkdir $work_path
 }
 
-set files_to_backup {
-    rtl
-    scripts
-}
+#Fix paths
+set files_to_backup [list $RTL_DIR "${DC_DIR}/scripts"]
 
 foreach file $files_to_backup {
     set src "${DC_DIR}/${file}"

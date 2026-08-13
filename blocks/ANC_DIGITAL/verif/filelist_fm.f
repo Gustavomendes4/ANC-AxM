@@ -2,12 +2,17 @@
 // Arquivo: verif/filelist_fm.f
 // Caminhos relativos ao diretório de execução: tools/fm/run/
 // AVISO: Exclusivo para Formality e Design Compiler.
+// Variaveis de ambiente definidas em setup.sh
 // ==============================================================================
 
-//TODO: arrumar isso para usar alguma variável de ambiente, de modo que isso não fique com esse tanto de "ponto ponto"
 
 
 // Arquivos de Design (RTL) - Apenas o circuito sintetizável
-../../../rtl/Memory.sv
-../../../rtl/CPU.sv
-../../../rtl/top_cpu.sv
+
+$RTL_DIR/ANC.v
+$RTL_DIR/LMS_Direct_10taps.v
+
+// SystemVerilog ex:
+//$RTL_DIR/Memory.sv
+//$RTL_DIR/CPU.sv
+//$RTL_DIR/top_cpu.sv
