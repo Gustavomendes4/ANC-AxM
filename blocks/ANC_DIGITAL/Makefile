@@ -4,15 +4,20 @@ all: help
 
 help:
 	@echo "Comandos disponíveis:"
-	@echo "  make sim    - Roda VCS"
-	@echo "  make synth  - Roda DC_NXT"
-	@echo "  make formal - Roda Formality"
-	@echo "  make clean  - Limpa os diretórios"
+	@echo "  make sim      - Roda VCS"
+	@echo "  make modelsim - Roda ModelSim/Questasim"
+	@echo "  make synth    - Roda DC_NXT"
+	@echo "  make formal   - Roda Formality"
+	@echo "  make clean    - Limpa os diretórios"
 
 # Regras de Execução (Carrega direto e delega para o sub-Makefile)
 sim:
 	@echo "--- Executando Simulação (VCS) ---"
 	cd ${VCS_DIR}/scripts && make sim	
+
+modelsim:
+	@echo "--- Executando Simulação (ModelSim/Questasim) ---"
+	cd ${MODELSIM_DIR}/scripts && make modelsim
 
 view_cov:
 	@echo "--- Abrindo Cobertura (Verdi) ---"
@@ -37,6 +42,9 @@ clean:
 	
 	@# Roda o clean do sub-makefile do VCS
 	@-cd ${VCS_DIR}/scripts && make clean 2>/dev/null || true
+
+	@# Roda o clean do sub-makefile do ModelSim/Questasim
+	@-cd ${MODELSIM_DIR}/scripts && make clean 2>/dev/null || true
 
 	@# Roda o clean do sub-makefile do DC
 	@-cd ${DC_DIR}/scripts && make clean 2>/dev/null || true

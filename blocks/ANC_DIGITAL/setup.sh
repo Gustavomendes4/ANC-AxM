@@ -15,9 +15,10 @@ export CONSTRAINTS_DIR="${ANC_DIGITAL_ROOT}/constraints"
 # tools scripts
 export SYNTH_DIR="${ANC_DIGITAL_ROOT}/tools"
 export DC_DIR="${SYNTH_DIR}/dc"
-export FC_DIR="${SYNTH_DIR}/fc" #inexistente no momento
+export FC_DIR="${SYNTH_DIR}/fc"
 export FM_DIR="${SYNTH_DIR}/fm"
 export VCS_DIR="${SYNTH_DIR}/vcs"
+export MODELSIM_DIR="${SYNTH_DIR}/modelsim"
 
 
 ### MODULES
@@ -28,6 +29,11 @@ MODULES=(
     "vcs/W-2024.09-SP2-3"
     "verdi/W-2024.09-SP2-6"
     "fm/W-2024.09-SP5"
+    "fm/W-2024.09-SP5"
+    "questasim/2023.4" #Questasim é a versão mais moderna do modelsim
+                       #Disponivel no servidor da Synopsys
+    "modelsim/W-2024.09-SP2-3"
+
 )
 
 echo "Loading Synopsys modules..."
@@ -47,4 +53,5 @@ echo "DC_DIR           = ${DC_DIR}"
 echo "FC_DIR           = ${FC_DIR}"
 echo "FM_DIR           = ${FM_DIR}"
 echo "VCS_DIR          = ${VCS_DIR}"
+echo "MODELSIM_DIR     = ${MODELSIM_DIR}"
 echo "=========================================="

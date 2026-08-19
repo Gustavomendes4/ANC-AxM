@@ -32,8 +32,10 @@ GUI ?= 0
 UVM ?= 0
 COV ?= 0
 
+SIM_TIME ?= 100000 # Em ns, Alterar dependendo de objetivo e testes
+
 COMP_ARGS :=
-RUN_ARGS  :=
+RUN_ARGS  := +vcs+finish+$(SIM_TIME)
 
 # Tags
 ifeq ($(GUI),1)
