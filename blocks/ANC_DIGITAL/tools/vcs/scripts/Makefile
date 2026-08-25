@@ -1,7 +1,7 @@
 # Makefile Interno - Simulação VCS
 # Localização: tools/vcs/scripts/Makefile
 
-
+RUN_DIR    := $(VCS_DIR)/run
 WORK_DIR   := $(VCS_DIR)/work
 
 # Configuração de Modo (RTL vs Gate-Level)
@@ -10,9 +10,9 @@ GL ?= 0
 ifeq ($(GL),1)
     $(info --- [MODO] Configurando para Gate-Level Simulation (Netlist) ---)
     FILELIST  = $(VERIF_DIR)/filelist_gl.f
-    TOP_TB    = top_tb_gl
+    TOP_TB    = tb_ANC #top_tb_gl
     
-    SDF_FILE := $(wildcard $(DC_DIR)/outputs/*.sdf)
+    SDF_FILE := $(wildcard $(DC_DIR)/outputs_latest/*.sdf)
     
     ifneq ($(words $(SDF_FILE)),1)
         $(error ERRO: Encontrado $(words $(SDF_FILE)) arquivos .sdf. Precisa ser exatamente 1)
@@ -24,7 +24,7 @@ ifeq ($(GL),1)
 else
     $(info --- [MODO] Configurando para RTL Simulation ---)
     FILELIST  = $(VERIF_DIR)/filelist.f
-    TOP_TB    = top_tb
+    TOP_TB    = tb_ANC
 endif
 
 # Controle de Features (Tags de Linha de Comando)

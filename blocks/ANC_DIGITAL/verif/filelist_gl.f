@@ -1,21 +1,26 @@
 // ==============================================================================
 // Arquivo: verif/filelist.f
 // Caminhos relativos ao diretório de compilação: tools/vcs/scripts/
+// Variaveis de ambiente definidas em setup.sh
 // ==============================================================================
 
-//TODO: arrumar isso para usar alguma variável de ambiente, de modo que isso não fique com esse tanto de "ponto ponto"
 
-
-// 1. Diretórios de Inclusão (Include directories)
-+incdir+../../../rtl
-+incdir+../../../verif
+// Diretórios de Inclusão (Include directories)
++incdir+$RTL_DIR
++incdir+$VERIF_DIR
 
 //verif
-../../../verif/top_tb_gl.sv
+$VERIF_DIR/tb_ANC.v
+//SystemVerilog ex:
+//$VERIF_DIR/top_tb_gl.sv
 
-// 2. Arquivos de Design (RTL-GL)
-../../../../../ref/verilog/saed32nm_lvt.v
-../../dc_nxt/outputs/top_cpu_mapped.v
+// Netlist sintetizado (RTL-GL)
+$DC_DIR/outputs_latest/top_syn.v
+
+// Arquivos de Design (RTL-GL)
+// Substituidos pelo netlist sintetizado(Testar funcionalidade antes de excluir)
+//../../../../../ref/verilog/saed32nm_lvt.v
+//../../dc_nxt/outputs/top_cpu_mapped.v
 
 
 
