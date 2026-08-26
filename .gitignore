@@ -18,6 +18,7 @@ simv.vdb/
 alib-*/
 moduleparamid
 
+
 # sim
 *.vcd
 *.vpd
@@ -44,6 +45,10 @@ vcs.log
 synopsys_*.log
 *.syn
 *.pvl
+log/
+logs/
+report/
+reports/
 
 # backups
 *.bak
