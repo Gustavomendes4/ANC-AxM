@@ -2,22 +2,26 @@
 # PDK SETUP
 source "${DC_DIR}/scripts/pdks/saed32/hvt.tcl"
 
+
 set LIBRARY_FILES "${NDM_REFERENCE_LIB_DIRS}"
 lappend search_path "${DB_PATH}"
 
 #PATH FIX: Assuming that the RTL is in the root directory of the project
 lappend search_path "${RTL_DIR}"
 
-lappend search_path "${target_library}"
+lappend search_path "${TARGET_LIBRARY}"
 
+set_app_var target_library $TARGET_LIBRARY
 set_app_var synthetic_library dw_foundation.sldb
-set_app_var link_library "* $target_library"
+set_app_var link_library "* $target_library $synthetic_library"
+set_app_var designer "ANC"
+
 set ndm_design_library "$NDM_DESIGN_LIB"
 
 if {![file isdirectory $NDM_DESIGN_LIB]} {
     create_lib \
         -technology $TECH_FILE \
-        -ref_libs   $NDM_REFERENCE_LIBS \
+        -ref_libs   $NDM_REFERENCE_LIB_DIRS \
         $NDM_DESIGN_LIB
 } else {
     open_lib $NDM_DESIGN_LIB
@@ -51,8 +55,10 @@ if {![file exists $work_path]} {
     file mkdir $work_path
 }
 
-#Fix paths
-set files_to_backup [list $RTL_DIR "${DC_DIR}/scripts"]
+set files_to_backup {
+    rtl
+    scripts
+}
 
 foreach file $files_to_backup {
     set src "${DC_DIR}/${file}"

@@ -16,7 +16,4 @@ dft_drc
 
 compile -incremental -area_effort high
 
-write_file \
-    -format ddc \
-    -hierarchy \
-    -output $FORMALITY_DIR/post_dft.ddc
+write_file -format verilog -hierarchy -output $DC_DIR/ANC_Netlist_DFT.v

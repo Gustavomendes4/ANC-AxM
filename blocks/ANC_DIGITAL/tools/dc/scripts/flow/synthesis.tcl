@@ -2,7 +2,4 @@ compile_ultra
 
 check_design
 
-write_file \
-    -format ddc \
-    -hierarchy \
-    -output $FORMALITY_DIR/post_compile.ddc
+write_file -format verilog -hierarchy -output $DC_DIR/ANC_Netlist.v
