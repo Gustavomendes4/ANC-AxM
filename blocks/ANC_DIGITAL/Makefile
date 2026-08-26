@@ -22,9 +22,13 @@ synth:
 	@echo "--- Executando Síntese (DC_NXT) ---"
 	cd ${DC_DIR}/scripts && make synth
 
-fm:
-	@echo "--- Executando Equivalência (FM) ---"
-	cd ${FM_DIR}/scripts && make fm
+fm_synthesis:
+	@echo "--- Executando Equivalência entre RTL e Sintese pré DFT (FM) ---"
+	cd ${FM_DIR}/scripts && make fm_synthesis
+
+fm_dft:
+	@echo "--- Executando Equivalência Sintese pré DFT e pós DFT (FM) ---"
+	cd ${FM_DIR}/scripts && make fm_dft
 
 fc:
 	@echo "--- Executando Equivalência (FC) ---"
