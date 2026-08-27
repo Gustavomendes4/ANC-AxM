@@ -7,49 +7,9 @@ module TRUN_GEN_C #(
     output wire [2*N-1:0] Y
 );
 
-    wire signed [4*N-1:0] abs_val;   // Valor absoluto
-    wire signed [2*N-1:0] truncated; // Valor truncado
+    assign Y = {A[4*N-1],A[2*N +F -2: F]}; //== {2*N{1'b1}}) ? {N{1'b0}} : {A[4*N-1],A[2*N +F -2: F]}; //geral
+endmodule 
 
-    assign truncated = {A[4*N-1], A[(2*F)+3:2*F],A[2*F-1:F]};
-    // Operador ternário para restaurar sinal ou zerar
-    assign Y = (truncated == {2*N{1'b1}}) ? 0 : truncated;
-
-endmodule
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*
-Copyright (c) 2015 Soheil Hashemi (soheil_hashemi@brown.edu)
-              2018 German Research Center for Artificial Intelligence (DFKI)
-
-Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation
-files (the "Software"), to deal in the Software without
-restriction, including without limitation the rights to use,
-copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following
-conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
-
-Approximate Multiplier Design Details Provided in:
-Soheil Hashemi, R. Iris Bahar, and Sherief Reda, "DRUM: A Dynamic
-Range Unbiased Multiplier for Approximate Applications" In
-Proceedings of the IEEE/ACM International Conference on
-Computer-Aided Design (ICCAD). 2015. 
-*/
-//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Adder
 module SUM_GEN #(
     parameter integer N=16
@@ -58,15 +18,14 @@ module SUM_GEN #(
     input signed [N-1:0] B,
     output reg signed [N-1:0] Y
 );
+
     reg c_out;
-    //carry calculado errado, vale apenas para positivos
+
     always @ (A or B) begin
         {c_out, Y}=A+B;
     end
 endmodule
 
-
-//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //Subtractor
 module SUB_GEN #(
     parameter integer N=16
@@ -79,7 +38,6 @@ module SUB_GEN #(
     assign Y = A - B;
 endmodule
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //Register with synchronous clear
 module REG #(
     parameter N=16
@@ -96,8 +54,6 @@ module REG #(
     end
 endmodule
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//Multiplier
 module MULT_GEN #(
     parameter integer N=16
 )(
@@ -105,25 +61,9 @@ module MULT_GEN #(
     input signed [N-1:0] B,
     output signed [2*N-1:0] Y
 );
-    //TODO: fiquei em dúvida se isso funciona para ponto fixo, como como o valor é o floar << F ao multiplciar teriamos um
-    //valor deslocado duas vezes por F ((A << F) * (B << F) = ((A*B) << (2*F))), então acho que deveria ter um >> F para manter o PF.
-    assign Y = A * B;
+    assign Y = A * B;   
 endmodule
 
-//Multiplier
-module MULT_GEN2 #(
-    parameter integer N=16
-)(
-    input signed [N-1:0] A,
-    input signed [N-1:0] B,
-    output signed [2*N-1:0] Y
-);
-
-    assign Y = A * B;
-endmodule
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //Adder Tree adder
 module ADDER_SHIFT #(
     parameter integer N=16
@@ -132,6 +72,7 @@ module ADDER_SHIFT #(
     input signed [N-1:0] B,
     output signed [N-1:0] C
 );
+   
     
     wire signed [N:0] AN,BN,CN;
 
@@ -143,7 +84,6 @@ module ADDER_SHIFT #(
 endmodule
 
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 module tree_8 #(
     parameter N=32,
     parameter F=11
@@ -164,6 +104,8 @@ module tree_8 #(
     assign y = {Soma7O[N-1],Soma7O[N-5:0],1'b0,1'b0,1'b0};
 endmodule
 
+
+
 module FIR_SFilter # (parameter N=16, parameter F = 14) (
     input wire clock,
     input wire reset,
@@ -171,9 +113,9 @@ module FIR_SFilter # (parameter N=16, parameter F = 14) (
     output wire [N-1:0] y_out      // Saída do filtro
 );
 
-    // Constantes em ponto fixo (ajustadas para Q16.11)
-    wire [N-1:0] g =  16'h2000; //0.5
-    wire [N-1:0] c = 16'h1333; // 0.3 em Q16.11
+    // Constantes em ponto fixo (ajustadas para Q1.11)
+    wire [N-1:0] g = 16'h2000; //  0.5 * (2 ^ 14) = 0.5 * (16384) = 16'd8192 = 16'h2000 
+    wire [N-1:0] c = 16'h1333; // 0.3 * (2 ^ 14) = 0.5 * (16384) = 16'd4915 = 16'h1333
 
     // Registradores para armazenar valores anteriores de y
     wire [N-1:0] y_reg1, y_reg2;
@@ -255,13 +197,15 @@ module LMS_Direct_10taps #(
 
     SUM_GEN #(2*N) SUM_tree2(.A(M[0]),.B(M[1]),.Y(SP1));
     tree_8 #(2*N)  AT2 (M[2],M[3],M[4],M[5],M[6],M[7],M[8],M[9],SP2);
-    SUM_GEN #(2*N) SUM_10(.A(SP1),.B(SP2),.Y(Soma1O));
+    SUM_GEN #(2*N) SUM_1(.A(SP1),.B(SP2),.Y(Soma1O));
+    // AQUI COMO SOMAMOS 10 NUMEROS O RESULTADO PODE TER ATÉ 10 BITS DE PARTE INTEIRA
 
     // Como temp = 0, inverte o resultado, isso no python seria o xp
     assign y_trunc = -1*Soma1O;
 
-    //Instância do filtro Sfilter
     TRUN_GEN_C #(N/2,F) T1 (.A(y_trunc),.Y(y_shift));
+
+    //Instância do filtro Sfilter
     FIR_SFilter Sfilter (.clock(clock),.reset(reset),.x_in(y_shift),.y_out(yn));
 
 
@@ -276,7 +220,7 @@ module LMS_Direct_10taps #(
     genvar j;
     generate
         for (j = 0; j < 10; j = j + 1) begin : gen_coef_update
-            MULT_GEN2 #(N) Mult_w(
+            MULT_GEN #(N) Mult_w(
                 .A(emi),
                 .B(j == 0 ? x : Ro[j]),
                 .Y(MW[j])
@@ -305,5 +249,5 @@ module LMS_Direct_10taps #(
 
     assign e=erro_yn;
     REG #(N) R_OUT(.clock(clock),.CL(reset),.A(y_shift),.S(y));
-
+    
 endmodule

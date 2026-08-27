@@ -3,7 +3,7 @@ source "${DC_DIR}/scripts/pdks/saed32/common.tcl"
 # ---- HVT ----
 set LIB_PATH_HVT "${PDK_BASE}/lib/stdcell_hvt/"
 set DB_PATH_HVT "${PDK_BASE}/lib/stdcell_hvt/db_nldm"
-set target_library_hvt "saed32hvt_tt1p05v25c.db"
+set TARGET_LIBRARY "saed32hvt_tt1p05v25c.db"
 set NDM_REFERENCE_LIB_DIRS_HVT [list \
     "${PDK_BASE}/lib/stdcell_hvt/ndm/saed32hvt_base_frame_timing.ndm" \
     "${PDK_BASE}/lib/stdcell_hvt/ndm/saed32hvt_pg_frame_timing.ndm" \
