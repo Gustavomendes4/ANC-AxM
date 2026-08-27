@@ -70,3 +70,7 @@ rtl/AN.DB/
 
 # --- VCS interactive/save-restore session state ---
 ucli.key
+
+#synth dc
+ANC_Netlist.v
+ANC_Netlist_DFT.v
