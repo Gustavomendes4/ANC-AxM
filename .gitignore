@@ -74,3 +74,4 @@ ucli.key
 #synth dc
 ANC_Netlist.v
 ANC_Netlist_DFT.v
+outputs_latest/
