@@ -7,6 +7,7 @@ set DC_DIR $::env(DC_DIR)
 set FM_DIR $::env(FM_DIR)
 set RTL_DIR $::env(RTL_DIR)
 set VERIF_DIR $::env(VERIF_DIR)
+set ANC_DIGITAL_ROOT $::env(ANC_DIGITAL_ROOT)
 
 set DESIGN_NAME "ANC"; 
 set NETLIST_NAME "ANC_Netlist.v"; # netlist gerado na sintese 
@@ -25,7 +26,8 @@ set MAPPED_FILE "${DC_DIR}/${NETLIST_NAME}"
 if {![file exists $RPT_PATH]} { file mkdir $RPT_PATH }
 
 # Setup Inicial e Bibliotecas
-source $FM_DIR/scripts/common_setup.tcl
+source "${ANC_DIGITAL_ROOT}/common/pdks/saed32/hvt.tcl"
+
 set search_path "$search_path $DC_DIR"
 set synopsys_auto_setup true
 read_db $TARGET_LIBRARY

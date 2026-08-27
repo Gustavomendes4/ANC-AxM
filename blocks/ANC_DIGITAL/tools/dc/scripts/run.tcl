@@ -1,7 +1,9 @@
+set ANC_DIGITAL_ROOT $::env(ANC_DIGITAL_ROOT)
 set DC_DIR $::env(DC_DIR)
 set CONSTRAINTS_DIR $::env(CONSTRAINTS_DIR)
 set RTL_DIR $::env(RTL_DIR)
 set FM_DIR $::env(FM_DIR)
+
 
 source "${DC_DIR}/scripts/common/setup.tcl"
 source "${DC_DIR}/scripts/common/utils.tcl"

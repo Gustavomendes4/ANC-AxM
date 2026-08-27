@@ -2,12 +2,10 @@
 # PDK SETUP
 source "${ANC_DIGITAL_ROOT}/common/pdks/saed32/hvt.tcl"
 
-
 set LIBRARY_FILES "${NDM_REFERENCE_LIB_DIRS}"
+
 lappend search_path "${DB_PATH}"
-
 lappend search_path "${RTL_DIR}"
-
 lappend search_path "${TARGET_LIBRARY}"
 
 set_app_var target_library $TARGET_LIBRARY
