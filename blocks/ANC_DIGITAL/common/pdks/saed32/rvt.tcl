@@ -1,10 +1,10 @@
 set ANC_DIGITAL_ROOT $::env(ANC_DIGITAL_ROOT)
 
-source "${DC_DIR}/scripts/pdks/saed32/common.tcl"
+source "${ANC_DIGITAL_ROOT}/common/pdks/saed32/common.tcl"
 
 set LIB_PATH "${PDK_BASE}/lib/stdcell_rvt/"
 set DB_PATH "${PDK_BASE}/lib/stdcell_rvt/db_nldm"
-set target_library "${PDK_BASE}/lib/stdcell_hvt/db_nldm/saed32rvt_tt1p05v25c.db"
+set TARGET_LIBRARY "${PDK_BASE}/lib/stdcell_hvt/db_nldm/saed32rvt_tt1p05v25c.db"
 
 set NDM_REFERENCE_LIB_DIRS  " \
     ${PDK_BASE}/lib/stdcell_rvt/ndm/saed32rvt_base_frame_timing.ndm \
