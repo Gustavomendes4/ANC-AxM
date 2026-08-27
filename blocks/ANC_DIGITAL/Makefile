@@ -4,10 +4,10 @@ all: help
 
 help:
 	@echo "Comandos disponíveis:"
-	@echo "  make sim    - Roda VCS"
-	@echo "  make synth  - Roda DC_NXT"
-	@echo "  make formal - Roda Formality"
-	@echo "  make clean  - Limpa os diretórios"
+	@echo "  make sim      - Roda VCS"
+	@echo "  make synth    - Roda DC_NXT"
+	@echo "  make formal   - Roda Formality"
+	@echo "  make clean    - Limpa os diretórios"
 
 # Regras de Execução (Carrega direto e delega para o sub-Makefile)
 sim:

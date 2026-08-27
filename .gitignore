@@ -62,3 +62,6 @@ __pycache__/
 *.pyc
 
 rtl/AN.DB/
+
+# --- VCS interactive/save-restore session state ---
+ucli.key

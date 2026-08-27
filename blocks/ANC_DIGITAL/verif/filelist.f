@@ -21,8 +21,8 @@ $RTL_DIR/ANC.v
 $RTL_DIR/LMS_Direct_10taps.v
 
 //SystemVerilog ex:
-../../../rtl/Memory.sv
-../../../rtl/CPU.sv
-../../../rtl/top_cpu.sv
+//../../../rtl/Memory.sv
+//../../../rtl/CPU.sv
+//../../../rtl/top_cpu.sv
 
 

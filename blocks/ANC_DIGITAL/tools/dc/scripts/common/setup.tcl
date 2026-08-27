@@ -1,11 +1,10 @@
 #####################################################################
 # PDK SETUP
-source "${DC_DIR}/scripts/pdks/saed32/hvt.tcl"
+source "${ANC_DIGITAL_ROOT}/common/pdks/saed32/hvt.tcl"
 
 set LIBRARY_FILES "${NDM_REFERENCE_LIB_DIRS}"
 lappend search_path "${DB_PATH}"
 
-#PATH FIX: Assuming that the RTL is in the root directory of the project
 lappend search_path "${RTL_DIR}"
 
 lappend search_path "${target_library}"
@@ -51,8 +50,10 @@ if {![file exists $work_path]} {
     file mkdir $work_path
 }
 
-#Fix paths
-set files_to_backup [list $RTL_DIR "${DC_DIR}/scripts"]
+set files_to_backup {
+    rtl
+    scripts
+}
 
 foreach file $files_to_backup {
     set src "${DC_DIR}/${file}"

@@ -15,7 +15,7 @@ export CONSTRAINTS_DIR="${ANC_DIGITAL_ROOT}/constraints"
 # tools scripts
 export SYNTH_DIR="${ANC_DIGITAL_ROOT}/tools"
 export DC_DIR="${SYNTH_DIR}/dc"
-export FC_DIR="${SYNTH_DIR}/fc" #inexistente no momento
+export FC_DIR="${SYNTH_DIR}/fc"
 export FM_DIR="${SYNTH_DIR}/fm"
 export VCS_DIR="${SYNTH_DIR}/vcs"
 
@@ -28,6 +28,8 @@ MODULES=(
     "vcs/W-2024.09-SP2-3"
     "verdi/W-2024.09-SP2-6"
     "fm/W-2024.09-SP5"
+
+
 )
 
 echo "Loading Synopsys modules..."
