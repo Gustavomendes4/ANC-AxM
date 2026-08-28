@@ -143,6 +143,8 @@ public:
 
   scalar sh_process(scalar sample) { return sh.process(sample); }
   void sh_learn(scalar error_sample) { sh.learn(sh_mu, error_sample); }
+
+  void go_online() { sh.clear_buffer(); }
 };
 
 void save_array(const char *filename, double *array, int size) {
