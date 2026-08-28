@@ -13,3 +13,10 @@ source setup.sh
 ```
 
 e depois o make desejado
+
+# Para Armazenar resultados de synths ao testar mudanças nos constraints
+
+```bash
+   make synth
+   ./scripts/archive_run.sh <run_name> baseline_<descricao>
+```
