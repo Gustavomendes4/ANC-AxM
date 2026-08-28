@@ -35,15 +35,38 @@ COV ?= 0
 SIM_TIME ?= 100000 # Em ns, Alterar dependendo de objetivo e testes
 
 COMP_ARGS :=
-RUN_ARGS  := +vcs+finish+$(SIM_TIME)
+RUN_ARGS  :=
+
+# +vcs+finish is a hard cut on simulation time, and the value is in timescale
+# PRECISION (1ps here), not ns. Under UVM the objections end the simulation, so
+# the cut is left out - the watchdog is uvm_top.set_timeout() in anc_drv_test.
+ifneq ($(UVM),1)
+    RUN_ARGS += +vcs+finish+$(SIM_TIME)
+endif
 
 # Tags
 ifeq ($(GUI),1)
     RUN_ARGS += -gui=verdi
 endif
 
+# UVM=1 switches filelist/top to the UVM testbench.
+# UVM_TEST has no default: no test class ships with the driver delivery.
+UVM_TEST ?=
+
 ifeq ($(UVM),1)
+    FILELIST  = $(VERIF_DIR)/filelist_uvm.f
+    TOP_TB    = tb_top
     COMP_ARGS += -ntb_opts uvm-1.2
+    ifneq ($(UVM_TEST),)
+        RUN_ARGS += +UVM_TESTNAME=$(UVM_TEST)
+    endif
+
+    ifneq ($(RESET_AT),)
+        RUN_ARGS += +RESET_AT=$(RESET_AT)
+    endif
+    ifneq ($(VERB),)
+        RUN_ARGS += +UVM_VERBOSITY=$(VERB)
+    endif
 endif
 
 ifeq ($(COV),1)
