@@ -11,8 +11,8 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  std::ifstream w_coefs_txt("w_coefs.txt");
-  std::ofstream err_txt("err_cpp.txt");
+  // std::ifstream w_coefs_txt("w_coefs.txt");
+  std::ofstream err_txt("out/err_cpp.txt");
 
   Ambient ambient(argv[1]);
 
@@ -50,10 +50,9 @@ int main(int argc, char **argv) {
     err_txt << err << "\n";
     fxlms.sh_learn(err);
   }
-  fxlms.sh.clear_buffer();
+  fxlms.go_online();
 
   std::cout << "running ANC...\n";
-  const int BLOCK = 10;
   for (int i = 0; i < ambient.num_samples(); ++i) {
 
     double x_in = ambient.next_sample();
@@ -65,13 +64,12 @@ int main(int argc, char **argv) {
     anc_buffer[0][i] = anc_y;
     err_buffer[0][i] = err;
   }
-  fxlms.w.print_coefs();
 
   if (!out_file.setAudioBuffer(anc_buffer)) {
     std::cerr << "failed to copy samples from buffer to ANC file\n";
     return 1;
   }
-  if (!out_file.save("anc_out.wav")) {
+  if (!out_file.save("out/anc_out.wav")) {
     std::cerr << "failed to save ANC output file\n";
     return 1;
   }
@@ -80,7 +78,7 @@ int main(int argc, char **argv) {
     std::cerr << "failed to copy samples from buffer to error file\n";
     return 1;
   }
-  if (!out_file.save("anc_err.wav")) {
+  if (!out_file.save("out/anc_err.wav")) {
     std::cerr << "failed to save ANC error file\n";
     return 1;
   }
