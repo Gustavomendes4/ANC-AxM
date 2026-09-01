@@ -7,6 +7,7 @@ REPORT_DIR   := $(FM_DIR)/reports
 LOG_DIR   := $(FM_DIR)/logs
 SCRIPT_SYNTHESIS    := $(FM_DIR)/scripts/fm_synthesis.tcl
 SCRIPT_DFT    := $(FM_DIR)/scripts/fm_dft.tcl
+SCRIPT_LEGACY    := $(FM_DIR)/scripts/fm_legacy.tcl
 
 GUI ?= 0
 FM_ARGS_SYNTHESIS   := -f $(SCRIPT_SYNTHESIS)
@@ -19,11 +20,18 @@ ifeq ($(GUI),1)
     FM_ARGS_DFT += -gui
 endif
 
+FM_ARGS_LEGACY := -f $(SCRIPT_LEGACY)
+ifeq ($(GUI),1)
+    FM_ARGS_LEGACY += -gui
+endif
+
 .PHONY: fm setup run clean
 
 fm_synthesis: setup run_synthesis
 
 fm_dft: setup run_dft
+
+fm_legacy: setup run_legacy
 
 
 setup:
@@ -38,6 +46,11 @@ run_synthesis:
 run_dft:
 	@echo "--- [FM RUN] Executando Equivalencia Logica em /run ---"
 	cd $(WORK_DIR) && fm_shell $(FM_ARGS_DFT) | tee $(LOG_DIR)/fm.log
+
+run_legacy:
+	@echo "--- [FM RUN] Executando Equivalencia Logica em /run ---"
+	cd $(WORK_DIR) && fm_shell $(FM_ARGS_LEGACY) | tee $(LOG_DIR)/fm.log
+
 
 clean:
 	@echo "--- [FM CLEAN] Limpando a pasta /run e relatorios ---"
