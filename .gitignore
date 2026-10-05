@@ -1,0 +1,87 @@
+*.wav
+*.bin
+*.hex
+*.elf
+*.o
+
+# synopsys dir
+work/
+runs/
+out/
+sim/
+dc_work/
+vcs_work/
+verdiLog/
+csrc/
+simv.daidir/
+simv.vdb/
+alib-*/
+moduleparamid
+
+
+# sim
+*.vcd
+*.vpd
+*.fsdb
+*.wlf
+simv
+simv.daidir/
+*.vvp
+*.o
+
+# timing and backend
+*.sdf
+*.spef
+*.svf
+
+# logs and reports
+*.log
+*.rpt
+*.lis
+*.mr
+command.log
+compile.log
+vcs.log
+synopsys_*.log
+*.syn
+*.pvl
+log/
+logs/
+report/
+reports/
+
+# backups
+*.bak
+*.bkp
+*.tmp
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+__pycache__/
+*.pyc
+
+rtl/AN.DB/
+
+venv/
+
+
+# --- VCS interactive/save-restore session state ---
+ucli.key
+
+#synth dc
+ANC_Netlist.v
+ANC_Netlist_DFT.v
+outputs_latest/
+
+
+# OTHER
+/out/
+out/
+
+blocks/ANC_DIGITAL/verif/model_py/*.txt
