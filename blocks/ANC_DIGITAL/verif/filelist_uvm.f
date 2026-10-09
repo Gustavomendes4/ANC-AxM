@@ -14,12 +14,17 @@
 +incdir+$VERIF_DIR
 +incdir+$VERIF_DIR/uvm
 +incdir+$VERIF_DIR/uvm/components
++incdir+$VERIF_DIR/uvm/sequences
++incdir+$VERIF_DIR/uvm/tests
 
-// 2. UVM testbench - order matters: interface -> package -> top
+// 2. C++ model DPI declarations (before anc_pkg.sv, which uses them)
+$MODEL_DIR/model_dpi.sv
+
+// 3. UVM testbench - order matters: interface -> package -> top
 $VERIF_DIR/uvm/anc_if.sv
 $VERIF_DIR/uvm/anc_pkg.sv
 $VERIF_DIR/uvm/tb_top.sv
 
-// 3. Design files (RTL)
+// 4. Design files (RTL)
 $RTL_DIR/ANC.v
 $RTL_DIR/LMS_Direct_10taps.v

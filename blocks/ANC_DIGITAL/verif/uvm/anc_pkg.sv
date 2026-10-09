@@ -27,8 +27,12 @@ package anc_pkg;
   // verif/
   `include "anc_transaction.sv"
   `include "anc_sequencer.sv"
+  `include "anc_sequence.sv"   // calls the C++ model as model::<fn>, no import
 
   `include "anc_driver.svh"
 
+  `include "anc_wav_sequence.svh"
+  `include "anc_base_test.svh"
+  `include "anc_wav_test.svh"
 
 endpackage : anc_pkg

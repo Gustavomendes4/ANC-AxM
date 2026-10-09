@@ -50,15 +50,48 @@ ifeq ($(GUI),1)
 endif
 
 # UVM=1 switches filelist/top to the UVM testbench.
-# UVM_TEST has no default: no test class ships with the driver delivery.
-UVM_TEST ?=
+# UVM_TEST: anc_wav_test (default, whole file) or anc_base_test (1000 samples).
+UVM_TEST ?= anc_wav_test
+
+# Fractional bits of the C++ model. Must follow the RTL: ANC.v does not pass F
+# down to LMS_Direct_10taps, which uses its default F=14.
+MODEL_F ?= 14
 
 ifeq ($(UVM),1)
     FILELIST  = $(VERIF_DIR)/filelist_uvm.f
     TOP_TB    = tb_top
     COMP_ARGS += -ntb_opts uvm-1.2
+
+    # C++ model (DPI): declarations in model_dpi.sv, implementation in dpi.cpp.
+    MODEL_CFLAGS := -I$(MODEL_DIR)/include -DMODEL_F=$(MODEL_F) -std=c++17
+    COMP_ARGS += $(MODEL_DIR)/dpi.cpp -cpp g++ -CFLAGS "$(MODEL_CFLAGS)" -LDFLAGS "-lstdc++"
+
     ifneq ($(UVM_TEST),)
         RUN_ARGS += +UVM_TESTNAME=$(UVM_TEST)
+    endif
+
+    # WAV is required. WAV_SAMPLES and WAV_SHIFT are anc_wav_test only.
+    ifneq ($(WAV),)
+        RUN_ARGS += +WAV=$(WAV)
+    endif
+    ifneq ($(WAV_SAMPLES),)
+        RUN_ARGS += +WAV_SAMPLES=$(WAV_SAMPLES)
+    endif
+    ifneq ($(WAV_SHIFT),)
+        RUN_ARGS += +WAV_SHIFT=$(WAV_SHIFT)
+    endif
+
+    # Waves only with FSDB=1.
+    ifeq ($(FSDB),1)
+        RUN_ARGS += +FSDB
+    endif
+
+    # DUMP=<file>: per-cycle CSV. DUMP_W=1 adds the W coefficients (big file).
+    ifneq ($(DUMP),)
+        RUN_ARGS += +DUMP=$(DUMP)
+    endif
+    ifeq ($(DUMP_W),1)
+        RUN_ARGS += +DUMP_W
     endif
 
     ifneq ($(RESET_AT),)
@@ -87,6 +120,10 @@ setup:
 	@echo "--- [VCS SETUP] Preparando diretório de execução em /run ---"
 	@mkdir -p $(RUN_DIR)
 	@if [ ! -f "$(FILELIST)" ]; then echo "ERRO: $(FILELIST) não encontrado!"; exit 1; fi
+ifeq ($(UVM),1)
+	@if [ -z "$(MODEL_DIR)" ]; then echo "ERRO: MODEL_DIR não definido - rode 'source setup.sh'"; exit 1; fi
+	@if [ ! -f "$(MODEL_DIR)/dpi.cpp" ]; then echo "ERRO: $(MODEL_DIR)/dpi.cpp não encontrado!"; exit 1; fi
+endif
 
 comp:
 	@echo "--- [VCS COMP] Compilando RTL e Testbench dentro de /run ---"

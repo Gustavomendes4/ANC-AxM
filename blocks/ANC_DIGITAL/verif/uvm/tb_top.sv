@@ -49,7 +49,8 @@ module tb_top;
   end
 
   initial begin
-    uvm_config_db#(virtual anc_if)::set(null, "uvm_test_top", "vif", intf);
+    // "*": with "uvm_test_top" the driver (uvm_test_top.drv) can't find the vif.
+    uvm_config_db#(virtual anc_if)::set(null, "*", "vif", intf);
     run_test();   // test comes from +UVM_TESTNAME
   end
 
@@ -58,6 +59,61 @@ module tb_top;
       $fsdbDumpfile("tb_top.fsdb");
       $fsdbDumpvars(0, tb_top);
     end
+  end
+
+  // Per-sample trace: +DUMP=<file> writes one CSV line per cycle out of reset,
+  // +DUMP_W adds the 10 W coefficients.
+  //
+  // Sampled on the negedge, away from the driver (posedge + 1ns) and the RTL
+  // registers (posedge). out/en/W end up one edge ahead of x_in/dn on the same
+  // line: check the alignment (0, 1 or 2 samples) before comparing with the model.
+  //
+  // Raw two's complement words (real = raw / 2**F); %f would hide 1 LSB
+  // differences. W[k] is the LMS_Direct_10taps array - the approximate LMS uses
+  // W1..W10 and needs a change here.
+  int trace_fd = 0;
+
+  initial begin
+    string       fname;
+    bit          with_w;
+    int unsigned idx = 0;
+
+    if ($value$plusargs("DUMP=%s", fname)) begin
+      with_w   = $test$plusargs("DUMP_W");
+      trace_fd = $fopen(fname, "w");
+
+      if (trace_fd == 0) begin
+        $display("[tb_top] FATAL: cannot open '%s' for writing", fname);
+        $finish;
+      end
+
+      $fwrite(trace_fd, "# anc rtl trace\n");
+      $fwrite(trace_fd, "# N=%0d F=%0d\n", N, F);
+      $fwrite(trace_fd, "# raw two's complement words; real = raw / 2**F\n");
+      $fwrite(trace_fd, "# out/en/w are one edge ahead of x_in/dn - see tb_top.sv\n");
+      $fwrite(trace_fd, "idx,x_in,dn,out,en");
+      if (with_w)
+        for (int k = 0; k < 10; k++) $fwrite(trace_fd, ",w%0d", k);
+      $fwrite(trace_fd, "\n");
+
+      forever begin
+        @(negedge clock);
+        if (intf.reset === 1'b0) begin
+          $fwrite(trace_fd, "%0d,%0d,%0d,%0d,%0d", idx,
+                  $signed(intf.x_in), $signed(intf.dn),
+                  $signed(intf.out),  $signed(intf.en));
+          if (with_w)
+            for (int k = 0; k < 10; k++)
+              $fwrite(trace_fd, ",%0d", $signed(dut.W_filter.W[k]));
+          $fwrite(trace_fd, "\n");
+          idx++;
+        end
+      end
+    end
+  end
+
+  final begin
+    if (trace_fd != 0) $fclose(trace_fd);
   end
 
 endmodule : tb_top
